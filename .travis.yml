@@ -1,14 +1,22 @@
 language: c
 
-arch:
-  - amd64
-  - arm64
+# Ubuntu 18.04 LTS
+dist: bionic
 
-compiler:
-  - gcc
-
-# Ubuntu 16.04 LTS
-dist: xenial
+jobs:
+    include:
+      - os: linux
+        arch: arm64
+        addons:
+          apt:
+            sources:
+              - sourceline: "deb https://apt.llvm.org/bionic/ llvm-toolchain-bionic-12 main"
+                key_url:    "https://apt.llvm.org/llvm-snapshot.gpg.key"
+            packages:
+              - clang-12
+        env:
+          - CC=clang-12
+          - CXX=clang++-12
 
 sudo: required
 
@@ -33,6 +41,6 @@ addons:
       name:                "namhyung/uftrace"
       description:         "Build submitted via Travis CI"
     notification_email:    namhyung@gmail.com
-    build_command_prepend: "./configure; make clean"
-    build_command:         "make -j 4"
+    build_command_prepend: ./configure
+    build_command:         make -j4
     branch_pattern:        coverity_scan
